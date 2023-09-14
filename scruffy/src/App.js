@@ -13,3 +13,6 @@ export function SurveyCreatorWidget() {
     <SurveyCreatorComponent creator={creator} />
   )
 }
+
+export default SurveyCreatorWidget;
+
