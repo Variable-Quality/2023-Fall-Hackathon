@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 import re
+import json
 
 #BASE_URL: https://catalog.kennesaw.edu/content.php?catoid=68&catoid=68&navoid=5469&filter%5Bitem_type%5D=3&filter%5Bonly_active%5D=1&filter%5B3%5D=1&filter%5Bcpage%5D=1#acalog_template_course_filter
 
@@ -21,18 +22,49 @@ def main() -> dict:
         page = soupify(url).find_all(class_="block_content")
         for p in page:
             key = ""
+            print(len(p.find_all("table")))
             #says this is out of range, idk, im goin to bed
-            course_list = p.find_all("tbody")[8]
+            for i in [3,2,1]:
+                try:
+                    course_list = p.find_all("table")[i]
+                    
+                    if "Filter this list of courses" in course_list.text:
+                        continue
+
+                except IndexError as e:
+                    if i == 1:
+                        print("Couldn't find a proper main body tag.")
+                        return
+
+
+
+            try:
+                course_list = p.find_all("table")[2]
+            except IndexError:
+                try:
+                    course_list = p.find_all("table")[1]
+                except IndexError:
+                    print(f"Uh, cant find the list on page {page}.")
+                    continue
+
+            print(course_list)
+
+            #Finding all table rows and chopping off some blank ones
             tr_list = course_list.find_all("tr")[1:]
+            tr_list = tr_list[:len(tr_list)-1]
 
             for row in tr_list:
                 if len(row.find_all("strong")) > 0:
-                    key = row.text
-                    print(f"New Key: {key}")
-                else:
-                    txt = re.sub(r'[^A-Za-z0-9 /\'()-]:', '', row.text).split(":")
-                    courses[key] = (txt[0],txt[1])
-                    print(courses[key])
+
+                    key = re.sub(r'[^A-Za-z0-9 /\':()-]', '', row.text)
+                    courses[key] = []
+
+
+                elif ":" in row.text:
+
+                    print("Text: " + re.sub(r'[^A-Za-z0-9 /\':()-]', '', row.text) + " End Text")
+                    txt = re.sub(r'[^A-Za-z0-9 /\':()-]', '', row.text).split(":")
+                    courses[key].append((txt[0],txt[1]))
 
     return courses
 
@@ -40,4 +72,8 @@ def main() -> dict:
             
 
 if __name__ == "__main__":
-    main()
+    #Creates a json file using class category as the keys for a list of class entries
+    #Each entry is a tuple, containing class number (ex: ACCT 2101) as the first entry, and the class name (ex: Internal Auditing) as the second entry.
+    classes = main()
+    with open("classes.json", "w") as f:
+        json.dump(classes, f, indent=4)
