@@ -1,25 +1,15 @@
-import logo from './logo.svg';
-import './App.css';
+import { SurveyCreatorComponent, SurveyCreator } from "survey-creator-react";
+import "survey-core/defaultV2.min.css";
+import "survey-creator-core/survey-creator-core.min.css";
 
-function App() {
+const creatorOptions = {
+  showLogicTab: true,
+  isAutoSave: true
+};
+
+export function SurveyCreatorWidget() {
+  const creator = new SurveyCreator(creatorOptions);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <SurveyCreatorComponent creator={creator} />
+  )
 }
-
-export default App;
