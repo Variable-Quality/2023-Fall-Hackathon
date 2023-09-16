@@ -18,6 +18,7 @@ edu_flag = False
 math_flag = False
 lit_flag = False
 lit_woke_flag = False
+hist_flag = False
 
 
 class TreeNode:
@@ -46,6 +47,7 @@ def conditional_traversal(node):
     global math_flag
     global lit_flag
     global lit_woke_flag
+    global hist_flag
 
     user_input = input(node.question)
     # Requires Python > 3.10
@@ -67,6 +69,7 @@ def conditional_traversal(node):
                     conditional_traversal(get_child(node, 2))
                     
                 case "history":
+                    hist_flag = True
                     level += 1
                     conditional_traversal(get_child(node, 3))
 
@@ -115,7 +118,7 @@ def conditional_traversal(node):
                             level += 1
                             conditional_traversal(get_child(node, 1))
                         else:
-                            print(f"Your major(s) should be: {get_child(node, 1).question}")
+                            print(f"Your major should be: {get_child(node, 1).question}")
 
                     case _:
                         print("Unable to read user input")
@@ -125,14 +128,14 @@ def conditional_traversal(node):
                         if math_flag:
                             conditional_traversal(get_child(node, 0))
                         else:
-                            print(f"Your major(s) should be: {get_child(node, 0).question}")
+                            print(f"Your major should be: {get_child(node, 0).question}")
 
                     case "respected":
                         if lit_flag:
                             level += 1
                             conditional_traversal(get_child(node, 1))
                         else:
-                            print(f"Your major(s) should be: {get_child(node, 1).question}")
+                            print(f"Your major should be: {get_child(node, 1).question}")
 
                     case _:
                         print("Unable to read user input")
@@ -140,19 +143,19 @@ def conditional_traversal(node):
             if edu_flag: # age group
                 match user_input:
                     case "elementary":
-                        print(f"Your major(s) should be: {get_child(node, 0).question}")
+                        print(f"Your major should be: {get_child(node, 0).question}")
                         return
 
                     case "middle":
-                        print(f"Your major(s) should be: {get_child(node, 1).question}")
+                        print(f"Your major should be: {get_child(node, 1).question}")
                         return
 
                     case "high":
-                        print(f"Your major(s) should be: {get_child(node, 2).question}")
+                        print(f"Your major should be: {get_child(node, 2).question}")
                         return
 
                     case "college":
-                        print(f"Your major(s) should be: {get_child(node, 3).question}")
+                        print(f"Your major should be: {get_child(node, 3).question}")
                         return
 
                     case _:
@@ -160,11 +163,11 @@ def conditional_traversal(node):
             elif (not edu_flag) and math_flag: # Introverted math person interested in computers? 
                 match user_input:
                     case "yes":
-                        print(f"Your major(s) should be: {get_child(node, 0).question}")
+                        print(f"Your major should be: {get_child(node, 0).question}")
                         return
 
                     case "no":
-                        print(f"Your major(s) should be: {get_child(node, 1).question}")
+                        print(f"Your major should be: {get_child(node, 1).question}")
                         return
 
                     case _:
@@ -172,14 +175,14 @@ def conditional_traversal(node):
             else:
                 match user_input: # In one of lit's longest paths
                     case "wealthy":
-                        print(f"Your major(s) should be:{get_child(node, 0).question}")
+                        print(f"Your major should be:{get_child(node, 0).question}")
                         return
                     case "respected":
                         if lit_woke_flag:
                             level += 1
                             conditional_traversal(get_child(node, 1))
                         else: 
-                            print(f"Your major(s) should be: {get_child(node, 1).question}")
+                            print(f"Your major should be: {get_child(node, 1).question}")
                             return
 
                     case _:
@@ -187,11 +190,11 @@ def conditional_traversal(node):
         case 7:
             match user_input: # Still in lit's longest path
                 case "cultures":
-                    print(f"Your major(s) should be:{get_child(node, 0).question}")
+                    print(f"Your major should be:{get_child(node, 0).question}")
                     return
 
                 case "general":
-                    print(f"Your major(s) should be:{get_child(node, 1).question}")
+                    print(f"Your major should be:{get_child(node, 1).question}")
                     return
 
                 case _:
@@ -203,6 +206,7 @@ def traverse():
     print("Hi there, I'm Scruffy! I'm going to ask you a few questions to help you narrow down your major.")
     print("Please try to remember to enter all your answers in lowercase.")
     print("Let's go!")
+    print(" ")
     conditional_traversal(root)
 
 # Define Tree
