@@ -68,6 +68,9 @@ def build_tree():
     
 # Prototyping
 #
+# This code is really rough around the edges and could definitely benefit from refactoring
+# But first, we have to try to get something that works
+#
 q1 = "What was your favorite subject in high school? (Math, Science, Literature, History, Art)"
 q2 = "How do you derive meaning in your life? (Through work, Family and friends)"
 q3 = "Do you prefer to work with people or by yourself? (With people, Solo)"
@@ -93,6 +96,12 @@ class TreeNode:
     def add_child(self, child):
         self.children.append(child)
 
+def get_child(node, index):
+    if index < len(node.children):
+        return node.children[index]
+    else:
+        return None
+
 def print_tree(node, level=0):
     print(" " * level + str(node.question))
     for child in node.children:
@@ -106,21 +115,30 @@ def conditional_traversal(node):
             match user_input: 
                 case "math":
                     math_flag = True
+                    # There's probably a more readable way to do this but for MVP sake:
+                    conditional_traversal(get_child(node, 0))
+
                 case "science":
+                    conditional_traversal(get_child(node, 1))
 
                 case "literature":
-
+                    conditional_traversal(get_child(node, 2))
+                    
                 case "history":
+                    conditional_traversal(get_child(node, 3))
 
                 case "art":
+                    conditional_traversal(get_child(node, 4))
 
                 case _ :
                     print("Unable to read user input")
         case 2: 
             match user_input: 
                 case "through work":
+                    conditional_traversal(get_child(node, 0))
 
                 case "family and friends":
+                    conditional_traversal(get_child(node, 1))
 
                 case _:
                     print("Unable to read user input")
@@ -129,7 +147,10 @@ def conditional_traversal(node):
             match user_input:
                 case "with people":
                     ext_flag = True
+                    conditional_traversal(get_child(node, 0))
+
                 case "solo":
+                    conditional_traversal(get_child(node, 1))
 
                 case _:
                     print("Unable to read user input")
@@ -138,15 +159,26 @@ def conditional_traversal(node):
                 match user_input:
                     case "yes":
                         edu_flag = True
+                        conditional_traversal(get_child(node, 0))
+
                     case "no":
+                        if !lit_flag:
+                            print(f"Your major(s) should be: {get_child(node, 1).question}")
+                        else:
+                            conditional_traversal(get_child(node, 1))
 
                     case _:
                         print("Unable to read user input")
             else:
                 match user_input: # Respect or money
                     case "wealthy":
+                        print(f"Your major(s) should be: {get_child(node, 0).question}")
 
                     case "respected":
+                        if !lit_flag:
+                            print(f"Your major(s) should be: {get_child(node, 1).question}")
+                        else:
+                            conditional_traversal(get_child(node, 1))
 
                     case _:
                         print("Unable to read user input")
@@ -154,36 +186,58 @@ def conditional_traversal(node):
             if edu_flag: # age group
                 match user_input:
                     case "Elementary":
+                        print(f"Your major(s) should be: {get_child(node, 0).question}")
+                        return
 
                     case "Middle":
+                        print(f"Your major(s) should be: {get_child(node, 1).question}")
+                        return
 
                     case "High":
+                        print(f"Your major(s) should be: {get_child(node, 2).question}")
+                        return
 
                     case "College":
+                        print(f"Your major(s) should be: {get_child(node, 3).question}")
+                        return
 
                     case _:
                         print("Unable to read user input")
             elif !edu_flag and math_flag: # Introverted math person interested in computers? 
                 match user_input:
                     case "yes":
+                        print(f"Your major(s) should be: {get_child(node, 0).question}")
+                        return
 
                     case "no":
+                        print(f"Your major(s) should be: {get_child(node, 1).question}")
+                        return
 
                     case _:
                         print("Unable to read user input")
-        case 6:
-            match user_input: # In lit's longest path
-                case "wealthy":
+            else:
+                match user_input: # In one of lit's longest paths
+                    case "wealthy":
+                        print(f"Your major(s) should be:{get_child(node, 0).question}")
+                        return
+                    case "respected":
+                        if !lit_woke_flag:
+                            print(f"Your major(s) should be: {get_child(node, 1).question}")
+                            return
+                        else: 
+                            conditional_traversal(get_child(node, 1))
 
-                case "respected":
-
-                case _:
-                    print("Unable to read user input")
+                    case _:
+                        print("Unable to read user input")
         case 7:
             match user_input: # Still in lit's longest path
                 case "cultures":
+                    print(f"Your major(s) should be:{get_child(node, 0).question}")
+                    return
 
                 case "general":
+                    print(f"Your major(s) should be:{get_child(node, 1).question}")
+                    return
 
                 case _:
                     print("Unable to read user input")
