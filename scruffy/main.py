@@ -2,8 +2,10 @@ import discord
 import asyncio
 from discord.ext import commands
 from configparser import ConfigParser
-from tree import build_tree
+from tree import traverse
 cfg = ConfigParser()
+
+# To run tree just call traverse()
 
 #Somehow this works on windows? Not sure if configparser is just that good or something else is going on
 #Def need to test this before deploying

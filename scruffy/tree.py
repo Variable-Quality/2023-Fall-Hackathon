@@ -1,84 +1,16 @@
-"""
-import itertools
-
-class Node:
-
-    id_iter = itertools.count()
-
-    def __init__(self, question, answer):
-        self.answer = answer
-        self.nodes = []
-        self.data = question
-        self.id = next(self.id_iter)
-
-    def __str__(self):
-        return self.answer
-
-    def __int__(self):
-        return len(self.nodes)
-            
-
-#Makes the tree and then returns the root node.
-#This is the worst code I have ever written. I'm having an amazing time, unironically
-def build_tree():
-
-    root = Node("What was your favorite subject in high school?", "root")
-
-    nextq = "How do you derive meaning in your life?"
-    root.nodes.append(Node(nextq,"Math"))
-    root.nodes.append(Node(nextq,"Science"))
-    root.nodes.append(Node(nextq,"English"))
-    root.nodes.append(Node(nextq,"History"))
-    root.nodes.append(Node(nextq,"Music/Art"))
-
-    #For each node attached to the root node, create the following progression
-    for i in range(0,int(root)-1):
-        nextq = "Do you prefer to work with others or by yourself?"
-        root.nodes[i].nodes.append(Node(nextq, "Through Work"))
-        root.nodes[i].nodes.append(Node(nextq, "Through Family and Friends"))
-
-        #Next Question for the "Through Work" answer.
-        nextq_work = "Would you like to work in education?"
-
-
-        #Next Question for the "Through Family and Friends" answer.
-        nextq_family = "Would you rather be wealthy or respected by your peers?"
-        root.nodes[i].nodes[0].nodes.append(Node(nextq_work, "By Myself"))
-        root.nodes[i].nodes[0].nodes.append(Node(nextq_work, "With Others"))
-
-        root.nodes[i].nodes[1].nodes.append(Node(nextq_family, "By Myself"))
-        root.nodes[i].nodes[1].nodes.append(Node(nextq_family, "With Others"))
-
-
-        #Terminating tree
-        root.nodes[i].nodes[0].nodes[0].nodes.append(Node("Bachelor of Science in Mathematics, Bachelor of Science in Secondary Education, Bachelor of Science in Middle Grades Education", "Yes"))
-        root.nodes[i].nodes[0].nodes[0].nodes.append(Node("Bachelor of Science in Mathematics, Bachelor of Science in Physics, Bachelor of Science in Mechanical Engineering", "No"))
-
-        #We messed this one up and beyond!!! Dont forget to re-check!!
-        root.nodes[i].nodes[0].nodes[1].nodes.append(Node("Bachelor of Science in Computer Engineering, Bachelor of Business Administration in Accounting, Bachelor of Business Administration in Finance", "Wealthy"))
-        root.nodes[i].nodes[0].nodes[1].nodes.append(Node("Bachelor of Science in Civil Engineering, Bachelor of Business Administration in Economics, Bachelor of Science in Industrial and Systems Engineering", "Respected"))
-
-        root.nodes[i].nodes[1].nodes[0].nodes.append(Node("", "Respected"))
-        root.nodes[i].nodes[1].nodes[0].nodes.append(Node("", "Respected"))
-         
-        #          i        1        1
-        #          i        1        1
-"""
-
-    
 # Prototyping
 #
 # This code is really rough around the edges and could definitely benefit from refactoring
 # But first, we have to try to get something that works
 #
-q1 = "What was your favorite subject in high school? (Math, Science, Literature, History, Art)"
-q2 = "How do you derive meaning in your life? (Through work, Family and friends)"
-q3 = "Do you prefer to work with people or by yourself? (With people, Solo)"
-q4_1 = "Would you like to work in education? (Yes, No)"
-q4_2 = "Would you rather be wealthy or respected by your peers? (Wealthy, Respected)"
-q5_1 = "Which age group? (Elementary, Middle, High, College)"
-q5_2 = "Do you like computers? (Yes, No)"
-q5_3 = "Would you like to explore cultures or people in general? (Cultures, General)"
+q1 = "What was your favorite subject in high school? (math, science, literature, history, art):  "
+q2 = "How do you derive meaning in your life? (through work, family and friends):  "
+q3 = "Do you prefer to work with people or by yourself? (with people, solo):  "
+q4_1 = "Would you like to work in education? (yes, no):  "
+q4_2 = "Would you rather be wealthy or respected by your peers? (wealthy, respected):  "
+q5_1 = "Which age group? (elementary, middle, high, college):  "
+q5_2 = "Do you like computers? (yes, no):  "
+q5_3 = "Would you like to explore cultures or people in general? (cultures, general):  "
 
 level = 1
 ext_flag = False
@@ -108,6 +40,13 @@ def print_tree(node, level=0):
         print_tree(child, level + 1)
 
 def conditional_traversal(node):
+    global level
+    global ext_flag
+    global edu_flag
+    global math_flag
+    global lit_flag
+    global lit_woke_flag
+
     user_input = input(node.question)
     # Requires Python > 3.10
     match level:
@@ -116,18 +55,23 @@ def conditional_traversal(node):
                 case "math":
                     math_flag = True
                     # There's probably a more readable way to do this but for MVP sake:
+                    level += 1
                     conditional_traversal(get_child(node, 0))
 
                 case "science":
+                    level += 1
                     conditional_traversal(get_child(node, 1))
 
                 case "literature":
+                    level += 1
                     conditional_traversal(get_child(node, 2))
                     
                 case "history":
+                    level += 1
                     conditional_traversal(get_child(node, 3))
 
                 case "art":
+                    level += 1
                     conditional_traversal(get_child(node, 4))
 
                 case _ :
@@ -135,9 +79,11 @@ def conditional_traversal(node):
         case 2: 
             match user_input: 
                 case "through work":
+                    level += 1
                     conditional_traversal(get_child(node, 0))
 
                 case "family and friends":
+                    level += 1
                     conditional_traversal(get_child(node, 1))
 
                 case _:
@@ -147,9 +93,11 @@ def conditional_traversal(node):
             match user_input:
                 case "with people":
                     ext_flag = True
+                    level += 1
                     conditional_traversal(get_child(node, 0))
 
                 case "solo":
+                    level += 1
                     conditional_traversal(get_child(node, 1))
 
                 case _:
@@ -159,51 +107,57 @@ def conditional_traversal(node):
                 match user_input:
                     case "yes":
                         edu_flag = True
+                        level += 1
                         conditional_traversal(get_child(node, 0))
 
                     case "no":
-                        if !lit_flag:
-                            print(f"Your major(s) should be: {get_child(node, 1).question}")
-                        else:
+                        if lit_flag:
+                            level += 1
                             conditional_traversal(get_child(node, 1))
+                        else:
+                            print(f"Your major(s) should be: {get_child(node, 1).question}")
 
                     case _:
                         print("Unable to read user input")
             else:
                 match user_input: # Respect or money
                     case "wealthy":
-                        print(f"Your major(s) should be: {get_child(node, 0).question}")
+                        if math_flag:
+                            conditional_traversal(get_child(node, 0))
+                        else:
+                            print(f"Your major(s) should be: {get_child(node, 0).question}")
 
                     case "respected":
-                        if !lit_flag:
-                            print(f"Your major(s) should be: {get_child(node, 1).question}")
-                        else:
+                        if lit_flag:
+                            level += 1
                             conditional_traversal(get_child(node, 1))
+                        else:
+                            print(f"Your major(s) should be: {get_child(node, 1).question}")
 
                     case _:
                         print("Unable to read user input")
         case 5:
             if edu_flag: # age group
                 match user_input:
-                    case "Elementary":
+                    case "elementary":
                         print(f"Your major(s) should be: {get_child(node, 0).question}")
                         return
 
-                    case "Middle":
+                    case "middle":
                         print(f"Your major(s) should be: {get_child(node, 1).question}")
                         return
 
-                    case "High":
+                    case "high":
                         print(f"Your major(s) should be: {get_child(node, 2).question}")
                         return
 
-                    case "College":
+                    case "college":
                         print(f"Your major(s) should be: {get_child(node, 3).question}")
                         return
 
                     case _:
                         print("Unable to read user input")
-            elif !edu_flag and math_flag: # Introverted math person interested in computers? 
+            elif (not edu_flag) and math_flag: # Introverted math person interested in computers? 
                 match user_input:
                     case "yes":
                         print(f"Your major(s) should be: {get_child(node, 0).question}")
@@ -221,11 +175,12 @@ def conditional_traversal(node):
                         print(f"Your major(s) should be:{get_child(node, 0).question}")
                         return
                     case "respected":
-                        if !lit_woke_flag:
+                        if lit_woke_flag:
+                            level += 1
+                            conditional_traversal(get_child(node, 1))
+                        else: 
                             print(f"Your major(s) should be: {get_child(node, 1).question}")
                             return
-                        else: 
-                            conditional_traversal(get_child(node, 1))
 
                     case _:
                         print("Unable to read user input")
@@ -243,6 +198,12 @@ def conditional_traversal(node):
                     print("Unable to read user input")
         case _:
             print("Some unknown error has occurred. Try again")
+
+def traverse():
+    print("Hi there, I'm Scruffy! I'm going to ask you a few questions to help you narrow down your major.")
+    print("Please try to remember to enter all your answers in lowercase.")
+    print("Let's go!")
+    conditional_traversal(root)
 
 # Define Tree
 #
